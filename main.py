@@ -31,6 +31,7 @@ def draw_board():
     colors = [WHITE, BLACK]
     for row in range(4):
         for col in range(4):
+            # RED SQUARES
             if (row == 3 and col == 1) or (row == 3 and col == 2):
                 pygame.draw.rect(screen, (255,0,0), pygame.Rect(col*board_scale, row*board_scale, board_scale, board_scale))
             else:
