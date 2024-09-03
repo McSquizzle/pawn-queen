@@ -213,7 +213,7 @@ class ChessGame:
 
 shortest_search = float('inf')
 
-def dfs(game, depth=0, total_games=0, depth_limit=22, game_number=0):
+def dfs(game, depth=0, total_games=0, depth_limit=13, game_number=0):
     global shortest_search
     if depth > depth_limit or game.is_game_over():
         if game.is_game_over() and depth < shortest_search:
