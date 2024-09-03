@@ -185,29 +185,27 @@ class ChessGame:
     
     def make_move(self, start_row, start_col, end_row, end_col):
         piece = self.board[start_row][start_col]
-        captured_piece = self.board[end_row][end_col]
+        # captured_piece = self.board[end_row][end_col]
 
         self.board[end_row][end_col] = piece
         self.board[start_row][start_col] = ''
 
-        if 'pawn' in piece:
-            color = piece.split('_')[0]
-            if (color == 'white' and end_row == 0) or (color == 'black' and end_row == 7):
-                self.board[end_row][end_col] = f'{color}_queen'
+        if 'pawn' in piece and end_row == 0:
+            self.board[end_row][end_col] = 'white_queen'
 
-        # Store move history for undoing
-        self.move_history.append(((start_row, start_col, end_row, end_col), captured_piece))
+        # Store move history for undoing - piece is used so we can ensure queen promotions don't get improperly undone
+        # Stores the old state piece, not the new state piece
+        self.move_history.append(((start_row, start_col, end_row, end_col), piece))
 
         # self.current_turn = 'black' if self.current_turn == 'white' else 'white'
         self.current_turn = 'white' # white stays playing for this game
 
     def undo_move(self):
-        move, captured_piece = self.move_history.pop()
+        move, old_piece = self.move_history.pop()
         start_row, start_col, end_row, end_col = move
-        piece = self.board[end_row][end_col]
-
-        self.board[start_row][start_col] = piece
-        self.board[end_row][end_col] = captured_piece
+        
+        self.board[start_row][start_col] = old_piece
+        self.board[end_row][end_col] = ''
 
         # self.current_turn = 'black' if self.current_turn == 'white' else 'white'
         self.current_turn = 'white' # white stays playing for this game
