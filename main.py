@@ -89,6 +89,16 @@ def game_intro():
 
         pygame.display.update()
 
+# 14
+# +8 moves for a total of 22 [['white_knight', 'white_bishop', 'white_rook', 'white_queen'], ['white_bishop', 'white_bishop', 'white_rook', ''], ['white_knight', 'white_rook', 'white_knight', 'white_knight'], ['white_rook', '_', '_', 'white_bishop']]
+# +8 moves for a total of 22 [['white_knight', 'white_bishop', 'white_knight', 'white_queen'], ['white_bishop', 'white_bishop', 'white_rook', ''], ['white_knight', 'white_rook', 'white_knight', 'white_rook'], ['white_rook', '_', '_', 'white_bishop']]
+# +11 moves for a total of 25 [['white_knight', 'white_knight', 'white_bishop', 'white_queen'], ['white_bishop', 'white_rook', 'white_rook', ''], ['white_bishop', 'white_bishop', 'white_knight', 'white_rook'], ['white_rook', '_', '_', 'white_knight']]
+# +10 moves for a total of 24 [['white_knight', 'white_knight', 'white_rook', 'white_queen'], ['white_bishop', 'white_rook', 'white_bishop', ''], ['white_bishop', 'white_rook', 'white_knight', 'white_knight'], ['white_rook', '_', '_', 'white_bishop']]
+
+# 13
+# +11 for a total of 24 [['white_knight', 'white_knight', 'white_bishop', 'white_queen'], ['white_bishop', 'white_bishop', 'white_rook', ''], ['white_rook', 'white_bishop', 'white_knight', 'white_rook'], ['white_rook', '_', '_', 'white_knight']]
+# +11 for a total of 24 [['white_knight', 'white_knight', 'white_rook', 'white_queen'], ['white_bishop', 'white_bishop', 'white_bishop', ''], ['white_rook', 'white_rook', 'white_knight', 'white_knight'], ['white_rook', '_', '_', 'white_bishop']]
+
 # ChessGame class with full movement rules
 class ChessGame:
     def __init__(self):
@@ -96,7 +106,7 @@ class ChessGame:
             ['white_knight', 'white_knight', 'white_knight', 'white_knight'],
             ['white_bishop', 'white_bishop', 'white_bishop', 'white_bishop'],
             ['white_rook', 'white_rook', 'white_rook', 'white_rook'],
-            ['', '_', '_', 'white_pawn']
+            ['','_','_','white_pawn']
         ]
         self.current_turn = 'white'
         self.move_history = []
@@ -180,7 +190,7 @@ class ChessGame:
     def is_game_over(self):
         """ Check if the game is over by checkmate or stalemate """
         
-        if self.board[0][3] == 'white_queen':
+        if self.board[3][0] == 'white_queen':
             return True
     
     def make_move(self, start_row, start_col, end_row, end_col):
@@ -213,14 +223,18 @@ class ChessGame:
 
 shortest_search = float('inf')
 
-def dfs(game, depth=0, total_games=0, depth_limit=13, game_number=0):
+def dfs(game, depth=0, total_games=0, depth_limit=24, game_iteration=0):
     global shortest_search
     if depth > depth_limit or game.is_game_over():
-        if game.is_game_over() and depth < shortest_search:
+        if game.is_game_over() and depth <= shortest_search:
             print("Moves to promote queen: " + str(depth))
             print("Move history: " + str(game.move_history))
+            # print(game.board)
             print("")
             shortest_search = depth
+        return total_games + 1
+    
+    if depth > 17 and ('white_queen' not in game.board[0] and 'white_queen' not in game.board[1] and 'white_queen' not in game.board[2] and 'white_queen' not in game.board[3]):
         return total_games + 1
 
     moves = game.get_all_possible_moves()
@@ -228,12 +242,15 @@ def dfs(game, depth=0, total_games=0, depth_limit=13, game_number=0):
         game.prev_piece_moved = [move[0], move[1], move[2], move[3]]
         game.make_move(move[0], move[1], move[2], move[3])
     
-        # THE CODE BELOW DRAWS THE GAMES UPDATED STATE UPON EVERY SEARCH - UNCOMMENT TO SHOW ANIMATION 
+        # THE CODE BELOW DRAWS THE GAMES UPDATED STATE EVERY SEARCH - UNCOMMENT TO SHOW ANIMATION 
         # BUT IT CONSUMES A TONNE OF COMPUTATIONAL TIME 
         
-        # draw_board()
-        # place_pieces(game.board)
-        # pygame.display.flip()
+        # if game_iteration % 1000 == 0: #only changes UI every 1000th search
+        #     draw_board()
+        #     place_pieces(game.board)
+        #     pygame.display.flip()
+            
+        # game_iteration += 1
                 
 
         total_games = dfs(game, depth + 1, total_games, depth_limit)
@@ -282,3 +299,16 @@ def main():
 
 if __name__ == "__main__":
     main()
+    
+    
+    
+# Moves to promote queen: 13
+# Move history: [((2, 0, 3, 0), 'white_rook'), ((2, 1, 2, 0), 'white_rook'), ((0, 2, 2, 1), 'white_knight'), ((1, 3, 0, 2), 'white_bishop'), ((2, 3, 1, 3), 'white_rook'), ((3, 3, 2, 3), 'white_pawn'), ((2, 1, 3, 3), 'white_knight'), ((1, 2, 2, 1), 'white_bishop'), ((1, 3, 1, 2), 'white_rook'), ((2, 3, 1, 3), 'white_pawn'), ((2, 2, 2, 3), 'white_rook'), ((0, 3, 2, 2), 'white_knight'), ((1, 3, 0, 3), 'white_pawn')]
+
+# Moves to promote queen: 13
+# Move history: [((2, 0, 3, 0), 'white_rook'), ((2, 1, 2, 0), 'white_rook'), ((2, 2, 2, 1), 'white_rook'), ((1, 3, 2, 2), 'white_bishop'), ((2, 3, 1, 3), 'white_rook'), ((3, 3, 2, 3), 'white_pawn'), ((2, 2, 3, 3), 'white_bishop'), ((0, 3, 2, 2), 'white_knight'), ((1, 3, 0, 3), 'white_rook'), ((2, 3, 1, 3), 'white_pawn'), ((0, 2, 2, 3), 'white_knight'), ((0, 3, 0, 2), 'white_rook'), ((1, 3, 0, 3), 'white_pawn')]
+
+
+
+
+
