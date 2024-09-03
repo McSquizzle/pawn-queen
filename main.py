@@ -234,7 +234,8 @@ def dfs(game, depth=0, total_games=0, depth_limit=24, game_iteration=0):
             shortest_search = depth
         return total_games + 1
     
-    if depth > 17 and ('white_queen' not in game.board[0] and 'white_queen' not in game.board[1] and 'white_queen' not in game.board[2] and 'white_queen' not in game.board[3]):
+    # if no queen is on the board after 15 moves, dont keep searching
+    if depth > 15 and ('white_queen' not in game.board[0] and 'white_queen' not in game.board[1] and 'white_queen' not in game.board[2] and 'white_queen' not in game.board[3]):
         return total_games + 1
 
     moves = game.get_all_possible_moves()
